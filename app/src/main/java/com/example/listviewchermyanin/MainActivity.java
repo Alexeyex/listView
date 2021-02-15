@@ -19,11 +19,10 @@ public class MainActivity extends AppCompatActivity {
     final int themeRes = R.style.AppTheme;
     private SharedPreferences mySharedPref;
     private final static String TEXT_PRGRPH = "note_text";
-    private List<Map<String, String>> simpleAdapter;
+    private List<Map<String, String>> list;
     private String mText;
     private ListView mListView;
-    String[] arrayContent;
-    SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
@@ -39,25 +38,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        arrayContent = mySharedPref.getString(TEXT_PRGRPH, mText).split("\n\n");
-        simpleAdapter = new ArrayList<Map<String, String>>();
+        String[] arrayContent = mySharedPref.getString(TEXT_PRGRPH, mText).split("\n\n");
+        list = new ArrayList<Map<String, String>>();
         Map<String, String> map;
         for (int i = 0; i < arrayContent.length; i++) {
             map = new HashMap<String, String>();
-            map.put("text", arrayContent[i]);
-            map.put("length", Integer.toString(arrayContent[i].length()));
-            simpleAdapter.add(map);
+            map.put(getString(R.string.key_text), arrayContent[i]);
+            map.put(getString(R.string.key_length), Integer.toString(arrayContent[i].length()));
+            list.add(map);
         }
 
         String[] from = {"text", "length"};
         int[] to = {R.id.text, R.id.lengthText};
 
-        SimpleAdapter adapter = new SimpleAdapter(this, simpleAdapter, R.layout.inside_listview, from, to);
+        SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.inside_listview, from, to);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                simpleAdapter.remove(position);
+                list.remove(position);
                 adapter.notifyDataSetChanged();
             }
         });
